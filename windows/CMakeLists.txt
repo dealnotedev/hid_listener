@@ -28,6 +28,7 @@ add_library(${PLUGIN_NAME} SHARED
         "include/hid_listener/hid_listener_plugin_windows.h"
         "hid_listener_plugin_windows.cpp"
         "${SHARED_INC}/dart-sdk/include/dart_api_dl.h"
+        "${SHARED_INC}/dart-sdk/include/dart_api_dl.c"
         ${PLUGIN_SOURCES}
 )
 
@@ -47,8 +48,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(${PLUGIN_NAME} INTERFACE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
         ${SHARED_INC})
-
-# Не включаем dart_api_dl.c - символы будут предоставлены другими плагинами (например, minisound)
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 
 # List of absolute paths to libraries that should be bundled with the plugin.
