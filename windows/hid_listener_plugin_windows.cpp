@@ -10,8 +10,11 @@
 
 static Dart_Port keyboardListenerPort = 0;
 static Dart_Port mouseListenerPort = 0;
+static bool dartApiInitialized = false;
 
 void NotifyDart(Dart_Port port, const void* work) {
+    if (!dartApiInitialized || Dart_PostCObject_DL == nullptr) return;
+
     const intptr_t workAddr = reinterpret_cast<intptr_t>(work);
 
     Dart_CObject cObject;
@@ -22,7 +25,8 @@ void NotifyDart(Dart_Port port, const void* work) {
 }
 
 static LRESULT KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
-    if (nCode < 0 || keyboardListenerPort == 0 || Dart_PostCObject_DL == nullptr) return CallNextHookEx(NULL, nCode, wParam, lParam);
+    if (nCode < 0 || keyboardListenerPort == 0 || !dartApiInitialized)
+        return CallNextHookEx(NULL, nCode, wParam, lParam);
 
     WindowsKeyboardEventType eventType = WindowsKeyboardEventType::WKE_KeyDown;
 
@@ -43,7 +47,7 @@ static LRESULT KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 }
 
 static LRESULT MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
-    if (nCode < 0 || mouseListenerPort == 0 || Dart_PostCObject_DL == nullptr)
+    if (nCode < 0 || mouseListenerPort == 0 || !dartApiInitialized)
         return CallNextHookEx(NULL, nCode, wParam, lParam);
 
     MouseEventType eventType = MouseEventType::LeftButtonDown;
@@ -110,7 +114,12 @@ bool SetMouseListener(Dart_Port port) {
 }
 
 void InitializeDartAPI(void* data) {
-    Dart_InitializeApiDL(data);
+    if (dartApiInitialized) return;
+
+    intptr_t result = Dart_InitializeApiDL(data);
+    if (result == 0) {
+        dartApiInitialized = true;
+    }
 }
 
 bool InitializeListeners() {
