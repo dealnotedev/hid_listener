@@ -28,7 +28,6 @@ add_library(${PLUGIN_NAME} SHARED
         "include/hid_listener/hid_listener_plugin_windows.h"
         "hid_listener_plugin_windows.cpp"
         "${SHARED_INC}/dart-sdk/include/dart_api_dl.h"
-        "${SHARED_INC}/dart-sdk/include/dart_api_dl.c"
         ${PLUGIN_SOURCES}
 )
 
