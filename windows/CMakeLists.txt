@@ -31,6 +31,9 @@ add_library(${PLUGIN_NAME} SHARED
   ${PLUGIN_SOURCES}
 )
 
+# Link with the shared library that contains dart_api_dl
+target_link_libraries(${PLUGIN_NAME} PRIVATE shared)
+
 set_target_properties(${PLUGIN_NAME} PROPERTIES OUTPUT_NAME "hid_listener")
 
 # Apply a standard set of build settings that are configured in the

@@ -4,7 +4,6 @@
 #include <flutter/plugin_registrar_windows.h>
 #include <dart-sdk/include/dart_native_api.h>
 #include <dart-sdk/include/dart_api_dl.h>
-#include <dart-sdk/include/dart_api_dl.c>
 
 #include <functional>
 #include "hid_listener_plugin.h"
@@ -111,7 +110,9 @@ bool SetMouseListener(Dart_Port port) {
 }
 
 void InitializeDartAPI(void* data) {
-	Dart_InitializeApiDL(data);
+    if (Dart_InitializeApiDL(data) != 0) {
+
+    }
 }
 
 bool InitializeListeners() {
